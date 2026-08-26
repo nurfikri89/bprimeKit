@@ -65,14 +65,23 @@ process.GlobalTag.globaltag = mysetting.GlobalTag
 
 print ('\nFinished basic setups...\n')
 
+if "MiniV4ToMiniV6_OTF" in options.DataProcessing:
+    from PhysicsTools.PatAlgos.tools.puppiJetMETReclusteringFromMiniAOD_cff import puppiJetMETReclusterFromMiniAOD
+    puppiJetMETReclusterFromMiniAOD(process,
+        runOnMC=not(mysetting.isData),
+        useExistingWeights=False,
+        reclusterAK4MET=True,
+        reclusterAK8=True,
+    )
+
 #-------------------------------------------------------------------------------
 #   Reprocessing Jets
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
-print ('\nBeginning jet toolbox setup.....\n')
-from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-jettoolbox_settings( process, not mysetting.isData )
-print ('\nFinished jet toolbox setup.....\n')
+# print ('\nBeginning jet toolbox setup.....\n')
+# from bpkFrameWork.bprimeKit.jettoolbox_settings import *
+# jettoolbox_settings( process, not mysetting.isData )
+# print ('\nFinished jet toolbox setup.....\n')
 
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification and Energy Correction bug fixing
@@ -106,7 +115,16 @@ process.externalSequence = cms.Sequence()
 process.Path = cms.Path(
 #    process.egammaPostRecoSeq*
     process.externalSequence*
-    process.JetToolBoxSequence*
+    # process.JetToolBoxSequence*
 #    process.pileupJetId*
     process.bprimeKit
-    )
+)
+
+#
+# This needs to be done as "puppiJetMETReclusteringFromMiniAOD" sets up
+# PAT-related tasks.
+#
+from PhysicsTools.PatAlgos.tools.helpers import getPatAlgosToolsTask
+patAlgosToolsTask = getPatAlgosToolsTask(process)
+process.endpath = cms.EndPath(patAlgosToolsTask)
+
