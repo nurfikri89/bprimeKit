@@ -65,7 +65,7 @@ process.GlobalTag.globaltag = mysetting.GlobalTag
 
 print ('\nFinished basic setups...\n')
 
-if "MiniV4ToMiniV6_OTF" in options.DataProcessing:
+if "MiniV4ToMiniV6_OTF" in options.DataProcessing or "ULMiniV2ToMiniV6_OTF" in options.DataProcessing:
     from PhysicsTools.PatAlgos.tools.puppiJetMETReclusteringFromMiniAOD_cff import puppiJetMETReclusterFromMiniAOD
     puppiJetMETReclusterFromMiniAOD(process,
         runOnMC=not(mysetting.isData),
